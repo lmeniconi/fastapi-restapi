@@ -10,7 +10,7 @@ from .schemas import UserSchema, CreateUserSchema
 
 # Depends
 from ..auth.depends import verify_token
-from .depends import is_creator, user_is_valid
+from .depends import is_creator, user_is_valid_create, user_is_valid_update
 
 # Passwords
 from passlib.hash import pbkdf2_sha256
@@ -35,7 +35,7 @@ async def get_user(id: int = Path(..., gt=0)):
     return await get_user_db(id)
 
 
-@router.post('/', dependencies=[Depends(user_is_valid)], response_model=UserSchema, status_code=status.HTTP_201_CREATED)
+@router.post('/', dependencies=[Depends(user_is_valid_create)], response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 async def create_user(user_data: CreateUserSchema = Body(...)):
     hashed_password = pbkdf2_sha256.hash(user_data.password)
     query = User.insert().values(username=user_data.username, password=hashed_password)
@@ -43,7 +43,7 @@ async def create_user(user_data: CreateUserSchema = Body(...)):
     return {"id": response_id, **user_data.dict()}
 
 
-@router.put('/{id}', dependencies=[Depends(user_is_valid), Depends(is_creator)], response_model=UserSchema, status_code=status.HTTP_202_ACCEPTED)
+@router.put('/{id}', dependencies=[Depends(user_is_valid_update), Depends(is_creator)], response_model=UserSchema, status_code=status.HTTP_202_ACCEPTED)
 async def update_user(id: int = Path(..., gt=0), user_data: CreateUserSchema = Body(...)):
     hashed_password = pbkdf2_sha256.hash(user_data.password)
     query = User.update().where(User.c.id == id).values(

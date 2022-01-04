@@ -18,9 +18,18 @@ async def is_creator(id: int = Path(..., gt=0), current_user: UserSchema = Depen
     return user
 
 
-async def user_is_valid(user_data: CreateUserSchema = Body(...)):
+async def user_is_valid_create(user_data: CreateUserSchema = Body(...)):
     query = User.select().where(User.c.username == user_data.username)
     user = await database.fetch_one(query)
     if user:
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="username has already be taken")
+
+
+async def user_is_valid_update(user_data: CreateUserSchema = Body(...), current_user: UserSchema = Depends(get_current_user)):
+    query = User.select().where(User.c.username == user_data.username)
+    user = await database.fetch_one(query)
+    if user:
+        if user.username != current_user.username:
+            raise HTTPException(
+                status_code=status.HTTP_406_NOT_ACCEPTABLE, detail="username has already be taken")
