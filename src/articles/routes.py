@@ -52,7 +52,7 @@ async def update_article(id: int = Path(..., gt=0), article: CreateArticleSchema
     return {"id": id, **article.dict(), "user_id": user.id}
 
 
-@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-async def delete_article(id: int = Path(..., gt=0), user: int = Depends(is_creator)):
+@router.delete('/{id}', dependencies=[Depends(is_creator)], status_code=status.HTTP_204_NO_CONTENT)
+async def delete_article(id: int = Path(..., gt=0)):
     query = Article.delete().where(Article.c.id == id)
     await database.execute(query)
