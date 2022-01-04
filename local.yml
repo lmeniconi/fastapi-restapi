@@ -1,0 +1,39 @@
+version: "3"
+
+volumes:
+  mariadb_data: {}
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: compose/local/Dockerfile
+    image: api_fastapi
+    depends_on:
+      - mariadb
+    volumes:
+      - .:/app
+    env_file:
+      - .env/api
+    ports:
+      - "8000:8000"
+    command: /start
+
+  mariadb:
+    image: mariadb
+    restart: always
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    env_file:
+      - .env/mariadb
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: pwd
+    ports:
+      - "80:80"
