@@ -10,6 +10,7 @@ class ArticleSchema(BaseModel):
     id: int = Field(...)
     title: str = title
     description: str = description
+    user_id: int = Field(...)
 
 
 class CreateArticleSchema(BaseModel):

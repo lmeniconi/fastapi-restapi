@@ -1,6 +1,7 @@
 from os import environ
 
 from sqlalchemy import create_engine, MetaData
+from sqlalchemy import Column, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 

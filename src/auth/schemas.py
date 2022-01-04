@@ -11,11 +11,11 @@ class LoginSchema(BaseModel):
 
 
 class TokenSchema(BaseModel):
+    username: Optional[str] = None
+
+
+class LoginTokenSchema(BaseModel):
     access_token: str = Field(..., title="Access Token",
                               description="The Access Token")
     token_type: str = Field(..., title="Access Token Type",
                             description="The type of the Token")
-
-
-class TokenData(BaseModel):
-    username: Optional[str] = None

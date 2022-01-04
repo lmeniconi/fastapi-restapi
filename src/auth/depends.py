@@ -10,7 +10,7 @@ from ..database import database
 from ..users.models import User
 
 # Schemas
-from .schemas import TokenData
+from .schemas import TokenSchema
 
 
 def verify_token(token: str = Depends(OAUTH2_SCHEMA)):
@@ -19,7 +19,7 @@ def verify_token(token: str = Depends(OAUTH2_SCHEMA)):
         username: str = payload.get('sub')
         if username is None:
             raise CREDENTIALS_EXCEPTION
-        return TokenData(username=username)
+        return TokenSchema(username=username)
     except JWTError:
         raise CREDENTIALS_EXCEPTION
 
